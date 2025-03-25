@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model scoreboard {
+  id          Int     @id @unique(map: "unique")
+  team1_name  String? @default("Team A") @db.Char(20)
+  team1_score Int?    @default(0)
+  team2_name  String? @default("Team B") @db.Char(20)
+  team2_score Int?    @default(0)
+  timer       Int?    @default(0)
+  period      Int?    @default(1)
+  resetcount  Int?    @default(0)
+  team1_color String? @default("#ff0000") @db.Char(20)
+  team2_color String? @default("#0000fff") @db.Char(20)
+  team2_fouls Int?
+  team1_fouls Int?
+}
