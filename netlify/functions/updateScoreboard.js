@@ -4,6 +4,21 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function handler(event, context) {
+  const headers = {
+    "Access-Control-Allow-Origin": "*", // Replace "*" with your frontend URL in production
+    "Access-Control-Allow-Methods": "OPTIONS, PUT",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
+
+  // Handle preflight requests
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ message: "CORS preflight check successful" }),
+    };
+  }
+
   if (event.httpMethod === "PUT") {
     const {
       team1_score,
@@ -38,6 +53,8 @@ export async function handler(event, context) {
       });
       return {
         statusCode: 200,
+        headers: { ...headers, "Content-Type": "application/json" },
+
         body: JSON.stringify(updatedScoreboard),
       };
     } catch (error) {

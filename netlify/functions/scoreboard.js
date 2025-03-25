@@ -27,7 +27,7 @@ export async function handler(event, context) {
         team2_fouls: true,
       },
     });
-    console.log(scoreboard);
+    // console.log(scoreboard);
     if (!scoreboard) {
       return {
         statusCode: 404,
