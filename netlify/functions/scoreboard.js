@@ -4,6 +4,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function handler(event, context) {
+  const headers = {
+    "Access-Control-Allow-Origin": "*", // Or specific origin
+    "Access-Control-Allow-Methods": "GET",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
   try {
     const scoreboard = await prisma.scoreboard.findUnique({
       where: { id: process.env.DEV_SETTING === "development" ? 2 : 1 },
@@ -22,8 +27,17 @@ export async function handler(event, context) {
         team2_fouls: true,
       },
     });
+    console.log(scoreboard);
+    if (!scoreboard) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ error: "Scoreboard not found" }),
+      };
+    }
     return {
       statusCode: 200,
+      headers: { ...headers, "Content-Type": "application/json" },
+
       body: JSON.stringify(scoreboard),
     };
   } catch (error) {
